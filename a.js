@@ -1,10 +1,18 @@
 const { faker } = require('@faker-js/faker');
- 
+
+function getRandomTimeOfDay() {
+  const startOfDay = new Date();
+  startOfDay.setHours(9, 0, 0, 0);
+  const endOfDay = new Date();
+  endOfDay.setHours(18, 0, 0, 0);
+  const randomTimestamp = new Date(startOfDay.getTime() + Math.random() * (endOfDay.getTime() - startOfDay.getTime()));
+  return randomTimestamp;
+}
 
 let bulkData = []; 
 async function bulkinsert(){
-    for (let i = 0; i < 100000; i++) { 
-        var datetime= Date.now()
+    for (let i = 0; i < 1000; i++) { 
+        var datetime= getRandomTimeOfDay()
         let calltype = faker.helpers.arrayElement(['disposed', 'missed', 'autoFail', 'autoDrop']);
         // console.log(calltype)
         let disposeName;
@@ -68,8 +76,7 @@ async function bulkinsert(){
     }
     bulkData.push([datetime,calltype, disposeType, disposeName, duration, agents, campaign, process, leadid, referenceuuid, customeruuid, hold, mute, ringing, transfer, conference, call, disposetime]);
 }
-
 }
 bulkinsert()
-console.log(bulkData)
+// console.log(bulkData)
 module.exports=bulkData;

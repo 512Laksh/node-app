@@ -6,7 +6,7 @@ const port = parseInt(process.env.PORT);
 const mysql = require("mysql");
 server.use(restify.plugins.bodyParser());
 const { faker } = require('@faker-js/faker');
-let data ={};
+// let data ={};
 
 var con = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -81,11 +81,79 @@ async function bulkinsert(){
       console.log(err);
      } 
 }
-// setTimeout(() => {
+setTimeout(() => {
 // bulkinsert();
-// }, 3000);
+}, 3000);
 // bulkinsert();
 
+
+server.get('/mysql/report',(req, res, next)=>{
+  let query=`SELECT 
+    HOUR(date_time) AS hour, 
+    type,
+    campaign_name,
+    process_name,
+    COUNT(*) AS call_count,
+    SUM(duration) AS total_duration,
+    SUM(hold) AS total_hold,
+    SUM(mute) AS total_mute,
+    SUM(ringing) AS total_ringing,
+    SUM(trasnfer) AS total_transfer,
+    SUM(conference) AS total_conference,
+    COUNT(DISTINCT reference_uuid) AS unique_calls
+FROM logger_report
+WHERE date_time BETWEEN '2025-01-11 00:00:00' AND '2025-01-11 23:59:59'
+GROUP BY HOUR(date_time), type, campaign_name, process_name
+ORDER BY hour, type;`;
+con.query(query,(err, result)=>{
+  if(err) throw err;
+  let data={};
+  data.response=result;
+  // console.log(res)
+  res.send(data)
+  console.log(data)
+})
+})
+
+
+
+// server.get('/mysql/report', (req, res, next) => {
+//   let query = `
+//     SELECT 
+//       HOUR(date_time) AS hour, 
+//       type,
+//       campaign_name,
+//       process_name,
+//       COUNT(*) AS call_count,
+//       SUM(duration) AS total_duration,
+//       SUM(hold) AS total_hold,
+//       SUM(mute) AS total_mute,
+//       SUM(ringing) AS total_ringing,
+//       SUM(trasnfer) AS total_transfer,
+//       SUM(conference) AS total_conference,
+//       COUNT(DISTINCT reference_uuid) AS unique_calls
+//     FROM logger_report
+//     WHERE date_time BETWEEN '2025-01-11 00:00:00' AND '2025-01-11 23:59:59'
+//     GROUP BY HOUR(date_time), type, campaign_name, process_name
+//     ORDER BY hour, type;
+//   `;
+
+//   con.query(query, (err, result) => {
+//     if (err) {
+//       // Handle error if the query fails
+//       console.error('Database query error:', err);
+//       return res.status(500).json({ error: 'Database query failed' });
+//     }
+
+//     // Store the result in the response data object
+//     let data = {};
+//     data.response = result;
+
+//     // Send the response only after the query is finished
+//     res.send(data);
+//     console.log(data);
+//   });
+// });
 
 
 
