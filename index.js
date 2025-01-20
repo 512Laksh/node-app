@@ -48,24 +48,13 @@ server.put("/mysql/update/:id", (req, res, next) => {
   res.send("1 row updated");
 });
 
-
-
 server.get("/mysql/report", (req, res, next) => {
   let query1 = "SELECT count(*) FROM `nodesql`";
   con.query(query1, (err, result, fields) => {
     if (err) throw err;
     data = { totalUserCount: result[0]['count(*)'] };
-    // res.send(data);
-    // console.log(data);
   });
 
-  // let query2 = `SELECT department, count(*) AS users FROM nodesql GROUP BY department`;
-  // con.query(query2, (err, result, fields) => {
-  //     if (err) throw err;
-  //     data.departmentCount= result;
-  //     // res.send(result);
-  //     console.log(data);
-  //   });
 
     let query3 = `SELECT department,
     COUNT(*) totalUsers, 
@@ -78,14 +67,6 @@ server.get("/mysql/report", (req, res, next) => {
         console.log(data);
       });
 
-    //   let query4 = `SELECT department, count(*) as InactiveUsers FROM nodesql where status='inactive' GROUP BY department`;
-    // con.query(query4, (err, result, fields) => {
-    //     if (err) throw err;
-    //     data.InctiveUserCount= result;
-    //     // res.send(result);
-    //     console.log(data);
-    //   });
-      
 setTimeout(() => {
   res.send(data)
 }, 2000);
@@ -119,15 +100,6 @@ async function bulkinsert(){
 // setTimeout(() => {
 // bulkinsert();
 // }, 3000);
-
-
-
-
-
-
-
-
-
 
 function insertData(name, email, pass) {
   var sql =
